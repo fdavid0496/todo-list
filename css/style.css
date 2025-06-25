@@ -1,0 +1,326 @@
+/*
+* Archivo de estilos CSS para la aplicación "Mi Gestor de Tareas".
+* Define la apariencia y el diseño de todos los elementos de la interfaz.
+*
+* @author [Fabián David Marín Luna]
+* @version 1.0.0
+* @date 2025-06-25
+*/
+
+/* Importar una fuente de Google Fonts para un look suave y llamativo */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Roboto:wght@300;400&display=swap');
+
+/* Variables CSS para nuestra paleta de colores, facilitando cambios de tema */
+:root {
+    --dark-bg-color: #2C3333;     /* Color de fondo principal oscuro */
+    --dark-accent-color: #2E4F4F; /* Color de acento oscuro, ligeramente más claro que el fondo */
+    --primary-color: #0E8388;     /* Color principal/de marca, vibrante */
+    --light-text-color: #CBE4DE;  /* Color de texto claro para contraste */
+    --success-color: #00FFD1;     /* Color para estados de éxito o énfasis */
+}
+
+/* --- Estilos Generales y Reseteos --- */
+body {
+    font-family: 'Roboto', sans-serif; /* Fuente principal para el cuerpo */
+    background-color: var(--dark-bg-color); /* Fondo oscuro para toda la aplicación */
+    color: var(--light-text-color); /* Color de texto claro por defecto */
+    margin: 0; /* Elimina el margen por defecto del body */
+    padding: 0; /* Elimina el padding por defecto del body */
+    display: flex; /* Usamos Flexbox para centrar el contenedor principal */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: flex-start; /* Alinea el contenido al inicio del eje transversal (arriba) */
+    min-height: 100vh; /* Asegura que ocupe al menos el alto de la ventana */
+    padding-top: 2rem; /* Pequeño padding superior para que no esté pegado al borde */
+    box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento */
+}
+
+.main-container {
+    width: 90%; /* Ocupa el 90% del ancho de la pantalla */
+    max-width: 1200px; /* Ancho máximo para pantallas grandes */
+    background-color: var(--dark-accent-color); /* Un color de fondo ligeramente diferente para el contenedor */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil para profundidad */
+    padding: 2rem; /* Espaciado interno */
+    box-sizing: border-box; /* Incluye padding y borde en el tamaño total */
+}
+
+/* --- Estilos de Encabezado --- */
+header {
+    text-align: center; /* Centra el contenido del encabezado */
+    margin-bottom: 2rem; /* Espacio inferior */
+}
+
+header h1 {
+    font-family: 'Montserrat', sans-serif; /* Fuente más llamativa para el título */
+    color: var(--primary-color); /* Color vibrante para el título principal */
+    font-size: 3em; /* Tamaño de fuente relativo */
+    margin-bottom: 0.5em; /* Margen inferior */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra para el texto */
+}
+
+/* --- Estilos de la Sección Principal (main) --- */
+main {
+    display: grid; /* Usamos Grid para organizar las secciones de formulario y lista */
+    grid-template-columns: 1fr; /* Una columna por defecto en pantallas pequeñas */
+    gap: 2rem; /* Espacio entre las secciones */
+}
+
+/* Media query para pantallas medianas (tabletas y superiores) */
+@media (min-width: 768px) {
+    main {
+        /* En pantallas medianas, formulario a la izquierda (1 parte), lista a la derecha (2 partes) */
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+.task-form-section,
+.task-list-section {
+    background-color: var(--dark-bg-color); /* Fondo oscuro para las secciones */
+    padding: 1.5rem; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra interior sutil */
+}
+
+.task-form-section h2,
+.task-list-section h2 {
+    font-family: 'Montserrat', sans-serif; /* Fuente del título de sección */
+    color: var(--primary-color); /* Color vibrante */
+    font-size: 2em; /* Tamaño de fuente relativo */
+    margin-top: 0; /* Elimina margen superior por defecto */
+    margin-bottom: 1.5rem; /* Espacio inferior */
+    text-align: center; /* Centra el texto del título */
+}
+
+/* --- Estilos del Formulario de Tareas --- */
+form .form-group {
+    margin-bottom: 1rem; /* Espacio inferior para cada grupo de formulario */
+}
+
+form label {
+    display: block; /* Hace que la etiqueta ocupe su propia línea */
+    margin-bottom: 0.5rem; /* Espacio debajo de la etiqueta */
+    color: var(--light-text-color); /* Color de texto claro */
+    font-weight: 600; /* Texto en negrita */
+    font-size: 1.1em; /* Tamaño de fuente relativo */
+}
+
+form input[type="text"],
+form textarea {
+    width: calc(100% - 1rem); /* Ancho completo con padding restado */
+    padding: 0.8rem; /* Espaciado interno */
+    border: 1px solid var(--primary-color); /* Borde con color primario */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: var(--dark-accent-color); /* Fondo del campo */
+    color: var(--light-text-color); /* Color de texto del campo */
+    font-size: 1em; /* Tamaño de fuente */
+    box-sizing: border-box; /* Incluye padding y borde en el tamaño total */
+    resize: vertical; /* Permite redimensionar verticalmente el textarea */
+}
+
+/* Estilo específico para el texto que el usuario ingresa dentro del textarea */
+form textarea {
+    font-family: 'Roboto', sans-serif; /* Asegura la misma fuente del cuerpo */
+    line-height: 1.5; /* Mejora el espaciado entre líneas para la lectura */
+}
+
+form input[type="text"]::placeholder,
+form textarea::placeholder {
+    color: rgba(203, 228, 222, 0.6); /* Color del texto del placeholder más tenue */
+}
+
+form input[type="text"]:focus,
+form textarea:focus {
+    outline: none; /* Elimina el contorno por defecto al enfocar */
+    border-color: var(--success-color); /* Borde de enfoque vibrante */
+    box-shadow: 0 0 5px rgba(0, 255, 209, 0.5); /* Sombra al enfocar */
+}
+
+/* Estilo para el label de mensaje de error de validación */
+label.error-message {
+    color: #ff6b6b; /* Rojo para mensajes de error */
+    font-size: 0.9em; /* Tamaño de fuente más pequeño */
+    display: none; /* Oculto por defecto en CSS, controlado por JavaScript */
+    margin-top: 0.2rem; /* Pequeño margen superior */
+}
+
+button#add-task-button {
+    background-color: var(--primary-color); /* Fondo del botón */
+    color: var(--dark-bg-color); /* Color del texto del botón */
+    padding: 0.8rem 1.5rem; /* Espaciado interno */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 1.1em; /* Tamaño de fuente */
+    cursor: pointer; /* Cursor de puntero al pasar por encima */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    margin-top: 1.5rem; /* Espacio superior */
+}
+
+button#add-task-button:hover:not(:disabled) {
+    background-color: var(--success-color); /* Color al pasar el ratón */
+    transform: translateY(-2px); /* Pequeño desplazamiento vertical al pasar el ratón */
+}
+
+button#add-task-button:disabled {
+    background-color: #555; /* Color para botón deshabilitado */
+    cursor: not-allowed; /* Cursor de "no permitido" */
+    opacity: 0.6; /* Opacidad reducida */
+}
+
+/* --- Estilos de la Tabla de Tareas --- */
+.tasks-table-container {
+    overflow-x: auto; /* Permite desplazamiento horizontal en tablas grandes */
+}
+
+table#tasks-table {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    border-collapse: collapse; /* Elimina el espacio entre los bordes de las celdas */
+    margin-top: 1.5rem; /* Espacio superior */
+}
+
+table#tasks-table thead th {
+    background-color: var(--primary-color); /* Fondo del encabezado de la tabla */
+    color: var(--dark-bg-color); /* Color del texto del encabezado */
+    padding: 0.8rem; /* Espaciado interno */
+    text-align: center; /* Centra el texto de los encabezados de las columnas (TAREA, ACCIONES) */
+    font-size: 1.1em; /* Tamaño de fuente */
+    border-bottom: 2px solid var(--success-color); /* Borde inferior para separar el encabezado */
+}
+
+table#tasks-table tbody tr {
+    border-bottom: 1px solid var(--dark-accent-color); /* Líneas divisorias sutiles entre filas */
+    transition: background-color 0.3s ease; /* Transición suave al pasar el ratón */
+}
+
+table#tasks-table tbody tr:last-child {
+    border-bottom: none; /* No hay borde en la última fila para una apariencia limpia */
+}
+
+table#tasks-table tbody tr:hover {
+    background-color: rgba(14, 131, 136, 0.1); /* Ligero cambio de fondo al pasar el ratón por la fila */
+}
+
+/* Estilo para las celdas de la tabla (tareas individuales) */
+table#tasks-table tbody td {
+    padding: 1rem 0.8rem; /* Espaciado interno de las celdas */
+    vertical-align: top; /* Alinea el contenido en la parte superior de la celda */
+    color: var(--light-text-color); /* Color de texto claro */
+    font-size: 1em; /* Tamaño de fuente */
+}
+
+/* Estilos específicos para la columna TAREA (primera celda de cada fila) */
+table#tasks-table tbody td:first-child {
+    width: 50%; /* La columna "Tarea" ocupa el 50% del ancho de la tabla */
+}
+
+/* Estilos específicos para la columna ACCIONES (última celda de cada fila) */
+table#tasks-table tbody td:last-child {
+    width: 50%; /* La columna "Acciones" ocupa el 50% del ancho de la tabla */
+    min-width: 250px; /* Asegura un ancho mínimo para que los botones quepan bien en una fila */
+    display: flex; /* Utiliza Flexbox para organizar los botones dentro de la celda */
+    flex-wrap: wrap; /* Permite que los botones se envuelvan a la siguiente línea si no hay espacio */
+    gap: 0.5rem; /* Espacio entre los botones */
+    justify-content: center; /* Centra los botones horizontalmente dentro de la celda */
+    align-items: center; /* Centra verticalmente los botones si tienen alturas diferentes */
+}
+
+/* Estilos para los botones de acción dentro de la tabla (Editar, Eliminar, Completar/Desmarcar) */
+.task-actions button {
+    padding: 0.6em 0.8em; /* Espaciado interno del botón */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 0.85em; /* Tamaño de fuente ligeramente más pequeño */
+    cursor: pointer; /* Cursor de puntero */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Transiciones suaves */
+    white-space: nowrap; /* Evita que el texto del botón se rompa en varias líneas */
+    flex-shrink: 0; /* Evita que los botones se encojan si no hay suficiente espacio */
+    min-width: fit-content; /* Asegura que el botón no sea más pequeño que su contenido */
+}
+
+.task-actions .edit-button {
+    background-color: var(--primary-color); /* Color para el botón de editar */
+    color: var(--dark-bg-color); /* Color de texto oscuro para contraste */
+}
+
+.task-actions .delete-button {
+    background-color: #e74c3c; /* Rojo para el botón de eliminar */
+    color: white; /* Color de texto blanco */
+}
+
+.task-actions .complete-button {
+    background-color: #27ae60; /* Verde para el botón de completar */
+    color: white; /* Color de texto blanco */
+}
+
+.task-actions .undo-complete-button {
+    background-color: #f39c12; /* Naranja para el botón de deshacer completado */
+    color: white; /* Color de texto blanco */
+}
+
+.task-actions button:hover {
+    filter: brightness(1.2); /* Un poco más brillante al pasar el ratón */
+    transform: translateY(-1px); /* Pequeño desplazamiento vertical */
+}
+
+/* Estilo para las tareas que han sido marcadas como completadas */
+tr.completed-task {
+    text-decoration: line-through; /* Tacha el texto de la tarea */
+    color: rgba(203, 228, 222, 0.6); /* Hace el texto más tenue */
+    background-color: rgba(0, 255, 209, 0.1); /* Fondo muy sutil para tareas completadas */
+}
+
+/* --- Estilos del Pie de Página --- */
+footer {
+    text-align: center; /* Centra el texto del pie de página */
+    margin-top: 2.5rem; /* Margen superior */
+    padding-top: 1.5rem; /* Espaciado superior */
+    border-top: 1px solid var(--primary-color); /* Borde superior para separarlo del contenido */
+    font-size: 0.9em; /* Tamaño de fuente ligeramente más pequeño */
+    color: rgba(203, 228, 222, 0.7); /* Color de texto más tenue */
+}
+
+/* --- Media Queries para Responsividad --- */
+
+/* Estilos para pantallas más pequeñas (móviles y tabletas pequeñas) */
+@media (max-width: 767px) {
+    .main-container {
+        width: 95%; /* Ocupa un poco más de ancho en móviles */
+        padding: 1.5rem 1rem; /* Padding reducido */
+    }
+
+    header h1 {
+        font-size: 2.5em; /* Tamaño de fuente ajustado para móviles */
+    }
+
+    .task-form-section h2,
+    .task-list-section h2 {
+        font-size: 1.8em; /* Tamaño de fuente ajustado para móviles */
+    }
+
+    button#add-task-button {
+        padding: 0.7rem 1rem; /* Padding ajustado */
+        font-size: 1em; /* Tamaño de fuente ajustado */
+    }
+
+    table#tasks-table thead th {
+        font-size: 1em; /* Tamaño de fuente ajustado */
+        padding: 0.6rem; /* Padding ajustado */
+    }
+
+    table#tasks-table tbody td {
+        padding: 0.8rem 0.5rem; /* Padding ajustado */
+        font-size: 0.9em; /* Tamaño de fuente ajustado */
+    }
+}
+
+/* Estilos para pantallas muy pequeñas (smartphones) */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 2em; /* Tamaño de fuente más pequeño para pantallas muy pequeñas */
+    }
+
+    .task-form-section h2,
+    .task-list-section h2 {
+        font-size: 1.5em; /* Tamaño de fuente más pequeño para pantallas muy pequeñas */
+    }
+}

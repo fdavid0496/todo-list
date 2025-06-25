@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Gestor de Tareas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>Mi Gestor de Tareas</h1>
+        </header>
+
+        <main>
+            <section class="task-form-section">
+                <h2>Crea una Tarea</h2>
+                <form id="task-form">
+                    <div class="form-group">
+                        <label for="task-title">Título de la Tarea:</label>
+                        <input type="text" id="task-title" name="taskTitle" placeholder="Ej: Comprar víveres">
+                        <label id="title-error" for="task-title" class="error-message">El título debe tener entre 5 y 50 caracteres.</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">Descripción (Opcional):</label>
+                        <textarea id="task-description" name="taskDescription" rows="4" placeholder="Ej: Leche, pan, huevos, frutas..."></textarea>
+                    </div>
+                    <button type="submit" id="add-task-button" disabled>Agregar Tarea</button>
+                </form>
+            </section>
+
+            <section class="task-list-section">
+                <h2>Tareas Registradas</h2>
+                <div class="tasks-table-container">
+                    <table id="tasks-table">
+                        <thead>
+                            <tr>
+                                <th>TAREA</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Mi Gestor de Tareas. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
