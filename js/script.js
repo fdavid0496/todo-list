@@ -1,10 +1,10 @@
 /**
- * script.js
+ * js/script.js
  *
- * Este archivo JavaScript gestiona la lógica de la aplicación "Mi Gestor de Tareas".
+ * Este archivo JavaScript gestiona la lógica principal de la aplicación "Mi Gestor de Tareas".
  * Incluye funcionalidades para añadir, editar, eliminar y marcar tareas como completadas,
- * así como la persistencia de datos en el almacenamiento local (localStorage)
- * y la validación del formulario.
+ * así como la persistencia de datos en el almacenamiento local (localStorage).
+ * La validación del formulario de título se maneja en `formValidation.js`.
  *
  * @author [Fabián David Marín Luna]
  * @version 1.0.0
@@ -18,14 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskTitleInput = document.getElementById('task-title'); // Campo de entrada para el título
     const taskDescriptionInput = document.getElementById('task-description'); // Campo de texto para la descripción
     const addTaskButton = document.getElementById('add-task-button'); // Botón para añadir/actualizar tarea
-    const titleErrorLabel = document.getElementById('title-error'); // Etiqueta para mostrar errores del título
     const tasksTableBody = document.querySelector('#tasks-table tbody'); // Cuerpo de la tabla de tareas
     const tasksTable = document.getElementById('tasks-table'); // La tabla completa de tareas
 
     // --- 2. Estado de la Aplicación ---
     let tasks = []; // Array para almacenar todas las tareas.
-    // Bandera para controlar si el campo de título ha sido interactuado de forma que requiera validación visible.
-    let isTitleInputDirty = false;
 
     // --- 3. Funciones de Utilidad y Persistencia ---
 
@@ -46,34 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (storedTasks) {
             tasks = JSON.parse(storedTasks);
         }
-    };
-
-    /**
-     * Valida el campo de título del formulario.
-     * - El título debe tener entre 5 y 50 caracteres (trim() elimina espacios al inicio/final).
-     * - Muestra u oculta el mensaje de error `titleErrorLabel` basándose en la validez
-     * y si `isTitleInputDirty` es true (es decir, si el usuario ya interactuó).
-     * - Habilita o deshabilita el botón `addTaskButton` según la validez del título.
-     * @returns {boolean} True si el título es válido, false en caso contrario.
-     */
-    const validateTitle = () => {
-        const title = taskTitleInput.value.trim();
-        const isValid = title.length >= 5 && title.length <= 50;
-
-        // Solo muestra/oculta el error si el input ya está "sucio" (interactuado)
-        if (isTitleInputDirty) {
-            if (!isValid) {
-                titleErrorLabel.style.display = 'block'; // Muestra el mensaje de error
-            } else {
-                titleErrorLabel.style.display = 'none'; // Oculta el mensaje de error
-            }
-        } else {
-            // Asegura que el error esté oculto si no ha habido interacción relevante.
-            titleErrorLabel.style.display = 'none';
-        }
-
-        addTaskButton.disabled = !isValid; // Habilita/deshabilita el botón según la validez
-        return isValid;
     };
 
     // --- 4. Funciones CRUD y Renderizado ---
@@ -132,17 +101,20 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Maneja el envío del formulario para añadir una nueva tarea.
      * - Previene el comportamiento por defecto del formulario (recargar la página).
-     * - Valida el título; si no es válido, detiene la ejecución.
+     * - **Depende del estado `disabled` del botón `addTaskButton` establecido por `formValidation.js`.**
      * - Crea un nuevo objeto de tarea con un ID único, título, descripción y estado inicial.
      * - Añade la nueva tarea al array `tasks`, la guarda y vuelve a renderizar la tabla.
-     * - Limpia el formulario y resetea el estado de validación.
+     * - Limpia el formulario y resetea el estado del botón.
      * @param {Event} e - El evento de envío del formulario.
      */
     const addTask = (e) => {
         e.preventDefault(); // Evita la recarga de la página
 
-        isTitleInputDirty = true; // Marca que se intentó enviar el formulario
-        if (!validateTitle()) { // Valida el título antes de procesar
+        // Aquí nos basamos en que el botón ya está deshabilitado si el título no es válido
+        if (addTaskButton.disabled) { 
+            // Opcional: si la lógica de validación estuviera en `formValidation.js` y expusiera una función
+            // de validación, podrías llamarla aquí para forzar el feedback al usuario en el submit.
+            // Por ejemplo: if (typeof window.validateTitle === 'function') window.validateTitle();
             return;
         }
 
@@ -162,10 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Limpia y resetea el formulario
         taskForm.reset();
-        addTaskButton.disabled = true; // Deshabilita el botón nuevamente
+        addTaskButton.disabled = true; // Deshabilita el botón nuevamente (asumiendo que el campo de título está vacío)
         taskTitleInput.focus(); // Vuelve el foco al campo de título
-        isTitleInputDirty = false; // Resetea el estado "sucio"
-        validateTitle(); // Oculta el mensaje de error si el campo quedó vacío
+        // No necesitamos manipular isTitleInputDirty o validateTitle aquí,
+        // ya que formValidation.js se encarga con sus propios listeners.
     };
 
     /**
@@ -185,8 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
             addTaskButton.textContent = 'Actualizar Tarea';
             addTaskButton.dataset.editingId = id; // Almacena el ID de la tarea que se está editando
             
-            isTitleInputDirty = true; // El campo se considera "sucio" al iniciar la edición
-            validateTitle(); // Re-valida el título para asegurar el estado correcto del botón y mensaje
+            // Para asegurar que la validación del título se active en modo edición si el título es inválido:
+            // Tendríamos que llamar a una función expuesta por formValidation.js
+            // Por ahora, el botón ya estará deshabilitado si el texto no cumple la validación.
+            // Si la función validateTitle no está expuesta globalmente, no se puede llamar directamente aquí.
+            // Si se necesitara, formValidation.js debería tener: `window.validateTitle = validateTitle;`
+            // Y aquí se llamaría: `if (typeof window.validateTitle === 'function') window.validateTitle();`
             
             // Cambia el manejador del evento submit
             taskForm.removeEventListener('submit', addTask);
@@ -197,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Actualiza una tarea existente con los datos del formulario.
      * - Previene el comportamiento por defecto del formulario.
-     * - Valida el título.
+     * - **Depende del estado `disabled` del botón `addTaskButton` establecido por `formValidation.js`.**
      * - Encuentra la tarea por su ID de edición.
      * - Actualiza los datos de la tarea en el array `tasks`, guarda y renderiza.
      * - Restaura el formulario a su estado original para "Agregar Tarea".
@@ -206,8 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateTask = (e) => {
         e.preventDefault();
 
-        isTitleInputDirty = true; // Marca que se intentó actualizar el formulario
-        if (!validateTitle()) {
+        // Aquí nos basamos en que el botón ya está deshabilitado si el título no es válido
+        if (addTaskButton.disabled) {
+            // Ver comentario en addTask para cómo se podría forzar validación visual
             return;
         }
 
@@ -224,11 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
             taskForm.reset();
             addTaskButton.textContent = 'Agregar Tarea';
             delete addTaskButton.dataset.editingId; // Elimina el ID de edición
-            addTaskButton.disabled = true;
-            taskTitleInput.focus();
-
-            isTitleInputDirty = false; // Resetea el estado "sucio"
-            validateTitle(); // Oculta el mensaje de error después de limpiar el formulario
+            addTaskButton.disabled = true; // Deshabilita el botón nuevamente
+            taskTitleInput.focus(); // Vuelve el foco al campo de título
 
             // Restaura el manejador del evento submit para añadir tareas
             taskForm.removeEventListener('submit', updateTask);
@@ -266,49 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- 5. Event Listeners ---
-
-    /**
-     * Listener para el evento 'input' en el campo de título.
-     * - Se activa cada vez que el usuario escribe en el campo.
-     * - Si el campo no está vacío, marca `isTitleInputDirty` como true.
-     * - Llama a `validateTitle` para actualizar el estado del error y el botón.
-     */
-    taskTitleInput.addEventListener('input', () => {
-        if (taskTitleInput.value.trim().length > 0) {
-            isTitleInputDirty = true; // El usuario ha empezado a escribir
-        } else {
-            // Si el campo se vacía, y no está "sucio" por un blur previo, oculta el error.
-            if (!isTitleInputDirty) {
-                 titleErrorLabel.style.display = 'none';
-            }
-        }
-        validateTitle();
-    });
-
-    /**
-     * Listener para el evento 'blur' (cuando el campo pierde el foco) en el campo de título.
-     * - Marca `isTitleInputDirty` como true para asegurar que el error se muestre si el campo es inválido.
-     * - Llama a `validateTitle` para realizar la validación final y mostrar/ocultar el error.
-     */
-    taskTitleInput.addEventListener('blur', () => {
-        isTitleInputDirty = true; // El campo ha sido tocado
-        validateTitle(); // Valida y muestra el error si es necesario
-    });
     
-    /**
-     * Listener para el evento 'focus' (cuando el campo gana el foco) en el campo de título.
-     * - Si el campo no está "sucio" y está vacío, asegura que el mensaje de error esté oculto.
-     */
-    taskTitleInput.addEventListener('focus', () => {
-        if (!isTitleInputDirty && taskTitleInput.value.trim() === '') {
-            titleErrorLabel.style.display = 'none';
-        }
-    });
-
-    /**
-     * Listener principal para el envío del formulario.
-     * Inicialmente, `addTask` es el controlador. Se puede cambiar a `updateTask` durante la edición.
-     */
+    // Listener principal para el envío del formulario.
+    // Inicialmente, `addTask` es el controlador. Se puede cambiar a `updateTask` durante la edición.
     taskForm.addEventListener('submit', addTask);
 
     /**
@@ -342,5 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 6. Inicialización de la Aplicación ---
     loadTasks(); // Carga las tareas existentes al inicio
     renderTasks(); // Dibuja las tareas cargadas en la tabla
-    addTaskButton.disabled = true; // Asegura que el botón "Agregar Tarea" esté deshabilitado al cargar si el campo de título está vacío.
+    // El estado inicial del botón `addTaskButton.disabled` se manejará por `formValidation.js`
+    // Una vez que `formValidation.js` se cargue y el DOM esté listo.
 });
